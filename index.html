@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GAN — Generative Adversarial Network</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ===== HEADER ===== -->
+    <div class="hdr">
+      <h1>GAN — GENERATIVE ADVERSARIAL NETWORK</h1>
+      <p>
+        Visualisasi cara kerja AI yang belajar menciptakan data dari keacakan
+        murni
+      </p>
+      <div class="hdr-badges">
+        <span class="badge b-gen">Generator = Pencipta</span>
+        <span class="badge b-disc">Discriminator = Detektif</span>
+        <span class="badge b-info">Target: Digit "3" (7×5 piksel)</span>
+      </div>
+    </div>
+
+    <!-- ===== ARENA ===== -->
+    <div class="arena">
+      <!-- GENERATOR -->
+      <div class="panel gen-panel" id="genPanel">
+        <span class="panel-tag tag-gen">Generator</span>
+        <p class="panel-name">Sang Pencipta</p>
+        <p class="panel-sub">
+          Menghasilkan data dari<br />noise acak, belajar<br />dari sinyal balik
+        </p>
+        <div class="pgrid" id="genGrid"></div>
+        <div class="acc-wrap">
+          <div class="acc-top">
+            <span>Kemiripan dengan asli</span>
+            <span id="accTxt">~28%</span>
+          </div>
+          <div class="acc-track">
+            <div class="acc-fill" id="accFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MIDDLE -->
+      <div class="mid">
+        <div class="trk-wrap">
+          <div class="trk-lbl">→ ke Discriminator</div>
+          <div class="trk">
+            <div class="trk-line"></div>
+            <div class="pkt pkt-fwd" id="pktFwd"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="epoch-num" id="epochNum">0</div>
+          <div class="epoch-lbl">Epoch</div>
+        </div>
+
+        <div class="verdict-box" id="verdBox">
+          <div class="verdict-main" id="verdMain">—</div>
+          <div class="verdict-sub" id="verdSub">Belum ada training</div>
+        </div>
+
+        <div class="trk-wrap">
+          <div class="trk">
+            <div class="trk-line"></div>
+            <div class="pkt pkt-bwd" id="pktBwd"></div>
+          </div>
+          <div class="trk-lbl">← sinyal balik</div>
+        </div>
+      </div>
+
+      <!-- DISCRIMINATOR -->
+      <div class="panel disc-panel">
+        <span class="panel-tag tag-disc">Discriminator</span>
+        <p class="panel-name">Sang Detektif</p>
+        <p class="panel-sub">
+          Memilah data nyata<br />dari yang palsu, terus<br />diperbarui tiap
+          epoch
+        </p>
+        <div class="pgrid" id="realGrid"></div>
+        <p style="font-size: 0.67rem; color: var(--muted); text-align: center">
+          Data nyata — referensi
+        </p>
+        <div class="ds-strip">
+          <span class="ds-lbl">Dataset:</span>
+          <div id="dsStrip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STATUS LOG ===== -->
+    <div class="status-log" id="statusLog">
+      Klik <b>▶ Mulai Training</b> untuk memulai simulasi, atau gunakan
+      <b>→ Step</b> untuk maju satu epoch.
+    </div>
+
+    <!-- ===== CONTROLS ===== -->
+    <div class="controls">
+      <button class="btn-start" id="btnStart" onclick="startTraining()">
+        ▶ Mulai Training
+      </button>
+      <button id="btnPause" onclick="togglePause()" disabled>⏸ Jeda</button>
+      <button id="btnStep" onclick="manualStep()">→ Step</button>
+      <button onclick="resetAll()">↺ Reset</button>
+      <div class="spd-wrap">
+        <span>Kecepatan:</span>
+        <input
+          type="range"
+          id="spdSlider"
+          min="1"
+          max="3"
+          value="2"
+          step="1"
+          oninput="updateSpeedLabel()"
+        />
+        <span id="spdLbl">Normal</span>
+      </div>
+    </div>
+
+    <!-- ===== PROGRESS ===== -->
+    <div class="prog-wrap">
+      <div class="prog-track">
+        <div class="prog-fill" id="progFill"></div>
+      </div>
+    </div>
+
+    <!-- ===== LOSS CHART ===== -->
+    <div class="chart-card">
+      <div class="chart-ttl">
+        Grafik Loss — Perkembangan Persaingan Generator vs Discriminator
+      </div>
+      <canvas id="cvs"></canvas>
+      <div class="legend">
+        <div class="leg">
+          <div class="leg-dot" style="background: var(--gen)"></div>
+          Generator Loss — turun = Generator makin pintar
+        </div>
+        <div class="leg">
+          <div class="leg-dot" style="background: var(--disc)"></div>
+          Discriminator Loss — naik = makin sulit membedakan
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="foot">
+      <b>Cara membaca animasi ini:</b> Generator memulai dari piksel acak
+      (noise). Setiap epoch, ia mengirim outputnya ke Discriminator.
+      Discriminator menilai: PALSU atau NYATA? Nilainya dikirim balik sebagai
+      sinyal belajar. Proses berulang hingga Generator berhasil "menipu"
+      Discriminator — itulah <b>keseimbangan Nash</b> pada GAN.
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
